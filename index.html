@@ -441,6 +441,28 @@ const LEVELS = [
        opts:[{t:"A/B 测试",ok:true},{t:"一个 Bug",ok:false,why:"是故意分两组做实验 —— A/B 测试。"},{t:"灰度发布",ok:false,why:"灰度是「先给一部分」;A/B 是「两版对比选优」。"}]},
     ]
   },
+  {
+    id:"insight", icon:"🔍", name:"洞察关", tag:"Lv.3 说得清",
+    sub:"埋点 · 日志 · 索引 · 并发",
+    cards:[
+      {term:"埋点", plain:"在关键位置装「传感器」。", art:"pin",
+       analogy:"想知道客人爱点哪道菜、在哪桌坐最久,就在那些位置装记录点。<b>埋点</b>就是在按钮、页面上埋下记录,用户行为数据由此而来。",
+       q:"「想知道某按钮被点了多少次」,得先?", praise:"对!先埋点,才有数据可看。",
+       opts:[{t:"埋点(在那里记录)",ok:true},{t:"直接问每个用户",ok:false,why:"问不过来 —— 靠埋点自动记录。"},{t:"凭感觉猜",ok:false,why:"要用数据说话 —— 先埋点。"}]},
+      {term:"日志 (Log)", plain:"系统的「监控录像 / 流水账」。", art:"logbook",
+       analogy:"系统把发生的事一条条记下来。出问题时像调监控回放,查清什么时候、为什么出错。<b>日志</b>是排查问题的第一现场。",
+       q:"「线上出 bug,查什么时候、为什么」看?", praise:"对!先看日志,现场都在里面。",
+       opts:[{t:"看日志",ok:true},{t:"重启碰运气",ok:false,why:"治标不治本 —— 先看日志找原因。"},{t:"等它自己好",ok:false,why:"不会自己好 —— 看日志定位。"}]},
+      {term:"索引 (Index)", plain:"数据的「检索目录」,查得飞快。", art:"indexcard",
+       analogy:"图书馆几百万本书,靠<b>检索目录</b>一下定位,不用一本本翻。数据库的索引同理 —— 让海量数据里查一条也很快。",
+       q:"「几百万条数据里查一条还很快」,靠?", praise:"对!有索引才不用逐条翻。",
+       opts:[{t:"索引",ok:true},{t:"运气好",ok:false,why:"不是运气,是建了索引。"},{t:"服务器够贵",ok:false,why:"关键在索引,不是堆钱。"}]},
+      {term:"并发", plain:"同一时刻「多少人一起用」。", art:"gauge",
+       analogy:"平时三三两两,秒杀时几万人同一秒涌进来。<b>并发</b>就是同时在线的压力 —— 系统扛不扛得住,看它的并发能力。",
+       q:"「秒杀时几万人同时下单」考验系统的?", praise:"对!这就是并发能力的考验。",
+       opts:[{t:"并发能力",ok:true},{t:"颜值",ok:false,why:"跟好不好看无关 —— 是同时扛多少人。"},{t:"客服态度",ok:false,why:"是系统同时承压的能力 —— 并发。"}]},
+    ]
+  },
 ];
 
 const ART = {
@@ -487,6 +509,10 @@ const ART = {
   bell:`<svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent)"><path d="M32 66V48a18 18 0 0 1 36 0v18l6 8H26z"/><path d="M44 78a6 6 0 0 0 12 0" style="color:var(--ok)"/></svg>`,
   graygradient:`<svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3" style="color:var(--accent)"><circle cx="50" cy="50" r="28"/><path d="M50 22a28 28 0 0 1 0 56z" fill="currentColor" stroke="none" style="color:var(--ok)"/></svg>`,
   abtest:`<svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round" style="color:var(--accent)"><rect x="18" y="30" width="28" height="40" rx="5"/><rect x="54" y="30" width="28" height="40" rx="5" style="color:var(--ok)"/><text x="32" y="56" text-anchor="middle" font-size="18" fill="currentColor" stroke="none" font-weight="700">A</text><text x="68" y="56" text-anchor="middle" font-size="18" fill="var(--ok)" stroke="none" font-weight="700">B</text></svg>`,
+  pin:`<svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round" style="color:var(--accent)"><path d="M50 20a20 20 0 0 1 20 20c0 15-20 36-20 36S30 55 30 40a20 20 0 0 1 20-20z"/><circle cx="50" cy="40" r="7" style="color:var(--ok)"/></svg>`,
+  logbook:`<svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent)"><rect x="26" y="20" width="48" height="60" rx="5"/><path d="M38 36h24M38 48h24M38 60h16"/><circle cx="32" cy="36" r="1.6" fill="currentColor" stroke="none" style="color:var(--ok)"/><circle cx="32" cy="48" r="1.6" fill="currentColor" stroke="none" style="color:var(--ok)"/></svg>`,
+  indexcard:`<svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent)"><rect x="22" y="26" width="44" height="48" rx="5"/><path d="M32 40h24M32 52h16"/><circle cx="64" cy="62" r="12" style="color:var(--ok)"/><path d="M73 71l8 8" style="color:var(--ok)"/></svg>`,
+  gauge:`<svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" style="color:var(--accent)"><path d="M24 66a26 26 0 1 1 52 0"/><path d="M50 66l16-14" style="color:var(--ok)"/><circle cx="50" cy="66" r="4" fill="currentColor" stroke="none" style="color:var(--ok)"/></svg>`,
 };
 
 // ---------- progress (per-viewer convenience) ----------
