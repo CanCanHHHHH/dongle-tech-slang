@@ -469,6 +469,16 @@ function saveDone(d){ try{ localStorage.setItem('dl-done', JSON.stringify(d)); }
 let doneMap = loadDone();
 let streakDays = 0;
 
+// term -> card lookup, and 错词本 (words answered wrong, cleared once mastered)
+const TERM2CARD = {};
+LEVELS.forEach(l=> l.cards.forEach(c=>{ TERM2CARD[c.term]=c; }));
+function loadWrong(){ try{ return JSON.parse(localStorage.getItem('dl-wrong')||'[]'); }catch(e){ return []; } }
+function saveWrong(a){ try{ localStorage.setItem('dl-wrong', JSON.stringify(a)); }catch(e){} }
+let wrongList = loadWrong();
+function addWrong(term){ if(!wrongList.includes(term)){ wrongList.push(term); saveWrong(wrongList); } }
+function removeWrong(term){ const k=wrongList.indexOf(term); if(k>=0){ wrongList.splice(k,1); saveWrong(wrongList); } }
+function shuffle(a){ a=a.slice(); for(let k=a.length-1;k>0;k--){ const j=Math.floor(Math.random()*(k+1)); [a[k],a[j]]=[a[j],a[k]]; } return a; }
+
 function ymd(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
 // streak counts days the user actually LEARNED (completed >=1 card), not mere visits
 function readStreak(){ try{ return (JSON.parse(localStorage.getItem('dl-streak'))||{}).streak||0; }catch(e){ return 0; } }
@@ -579,7 +589,7 @@ function renderHome(){
         <span class="pill">🔥 连续学习 ${streakDays} 天</span>
         <div class="tiers"><span>🟢 Lv.1 认字 ${lv1d}/${lv1t}</span><span>🟡 Lv.2 听得懂 ${lv2d}/${lv2t}</span></div>
         <div class="metabtns">
-          <button class="share-btn" id="review">🔁 随机复习</button>
+          <button class="share-btn" id="review">${(wrongList.filter(t=>TERM2CARD[t]).length)>0 ? `🔁 复习错词 (${wrongList.filter(t=>TERM2CARD[t]).length})` : '🔁 随机复习'}</button>
           <button class="share-btn" id="share">🏆 成绩卡</button>
         </div>
       </div>
@@ -644,11 +654,13 @@ function collectLearned(){
   return arr;
 }
 function renderReview(){
-  let pool = collectLearned();
+  const wrongCards = shuffle(wrongList.map(t=>TERM2CARD[t]).filter(Boolean));
+  const learned = shuffle(collectLearned());
+  const pool=[]; const seen=new Set();
+  for(const c of wrongCards){ if(!seen.has(c.term)){ pool.push(c); seen.add(c.term); } }        // 错词优先
+  for(const c of learned){ if(pool.length>=10) break; if(!seen.has(c.term)){ pool.push(c); seen.add(c.term); } } // 其余随机补足
   if(pool.length===0){ showToast('先学几个词,再来复习吧 🙂'); return; }
-  for(let k=pool.length-1;k>0;k--){ const j=Math.floor(Math.random()*(k+1)); [pool[k],pool[j]]=[pool[j],pool[k]]; }
-  pool = pool.slice(0, Math.min(10, pool.length));
-  playSession({ cards: pool, icon:'🔁', name:'随机复习', review:true });
+  playSession({ cards: pool.slice(0,10), icon:'🔁', name: wrongCards.length ? '复习错词' : '随机复习', review:true });
 }
 
 // generic quiz engine for both learning a level and reviewing
@@ -705,9 +717,11 @@ function playSession(cfg){
         btn.classList.add('correct'); [...opts.children].forEach(b=>b.disabled=true);
         fb.className='feedback'; fb.innerHTML=`<b>懂了 ✓</b> ${c.praise}`;
         if(cfg.review && firstTry) perfect++;
+        if(firstTry) removeWrong(c.term); // 首答答对 = 掌握,移出错词本
         markSolved(i); helper.hidden=true; next.hidden=false; next.focus();
       }else{
         firstTry=false;
+        addWrong(c.term); // 答错入错词本
         btn.classList.add('wrong'); btn.disabled=true;
         fb.className='feedback hint'; fb.innerHTML=`<b>再想想</b> ${o.why}`;
       }
