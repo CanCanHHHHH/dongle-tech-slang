@@ -69,6 +69,7 @@
   .pill{display:inline-flex; gap:7px; align-items:center; background:var(--surface-2); border-radius:99px; padding:7px 13px; font-size:13.5px; font-weight:700; width:fit-content}
   .tiers{font-size:13px; color:var(--muted); display:flex; gap:12px; flex-wrap:wrap}
   .share-btn{background:transparent; color:var(--accent); border:1.5px solid var(--accent); border-radius:99px; padding:7px 14px; font:inherit; font-size:13px; font-weight:700; cursor:pointer; width:fit-content; transition:transform .06s}
+  .metabtns{display:flex; gap:8px; flex-wrap:wrap}
   .welcome{background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:15px 18px; margin:16px 2px 2px; font-size:15.5px; box-shadow:var(--shadow)}
   .welcome b{font-family:var(--display); font-weight:600}
   .helper{margin:18px 0 4px; text-align:center; color:var(--muted); font-size:14px}
@@ -577,7 +578,10 @@ function renderHome(){
       <div class="stat-meta">
         <span class="pill">🔥 连续学习 ${streakDays} 天</span>
         <div class="tiers"><span>🟢 Lv.1 认字 ${lv1d}/${lv1t}</span><span>🟡 Lv.2 听得懂 ${lv2d}/${lv2t}</span></div>
-        <button class="share-btn" id="share">🏆 我的成绩卡</button>
+        <div class="metabtns">
+          <button class="share-btn" id="review">🔁 随机复习</button>
+          <button class="share-btn" id="share">🏆 成绩卡</button>
+        </div>
       </div>
     </div>`;
   const welcomeHTML = `<div class="welcome">👋 新手就从下面的 <b>🍜 餐厅关</b> 开始 —— 3 分钟,学会你的头 5 个词。</div>`;
@@ -590,6 +594,8 @@ function renderHome(){
     <ul class="path" id="path"></ul>`;
   const shareBtn = stage.querySelector('#share');
   if(shareBtn) shareBtn.addEventListener('click', ()=> openShare({learned, total:totalWords, lv1d, lv1t, lv2d, lv2t}));
+  const reviewBtn = stage.querySelector('#review');
+  if(reviewBtn) reviewBtn.addEventListener('click', renderReview);
   const inp = stage.querySelector('#search'), res = stage.querySelector('#results');
   inp.addEventListener('input', ()=>{
     const q = inp.value.trim().toLowerCase();
@@ -629,37 +635,58 @@ function renderHome(){
 // ---------- DECK ----------
 function renderDeck(lvlIdx){
   const lv = LEVELS[lvlIdx];
-  const solved = new Array(lv.cards.length).fill(false);
-  // pre-fill solved from saved progress so returning shows history
-  (doneMap[lv.id]||[]).forEach(n=>{ if(n<solved.length) solved[n]=true; });
-  // resume at first not-yet-learned card
+  playSession({ cards: lv.cards, icon: lv.icon, name: lv.name, levelId: lv.id, lvlIdx });
+}
+
+function collectLearned(){
+  const arr=[];
+  LEVELS.forEach(l=> (doneMap[l.id]||[]).forEach(n=>{ if(l.cards[n]) arr.push(l.cards[n]); }));
+  return arr;
+}
+function renderReview(){
+  let pool = collectLearned();
+  if(pool.length===0){ showToast('先学几个词,再来复习吧 🙂'); return; }
+  for(let k=pool.length-1;k>0;k--){ const j=Math.floor(Math.random()*(k+1)); [pool[k],pool[j]]=[pool[j],pool[k]]; }
+  pool = pool.slice(0, Math.min(10, pool.length));
+  playSession({ cards: pool, icon:'🔁', name:'随机复习', review:true });
+}
+
+// generic quiz engine for both learning a level and reviewing
+function playSession(cfg){
+  const cards = cfg.cards;
+  const solved = new Array(cards.length).fill(false);
+  if(!cfg.review){ (doneMap[cfg.levelId]||[]).forEach(n=>{ if(n<solved.length) solved[n]=true; }); }
   let i = solved.findIndex(s=>!s); if(i<0) i=0;
+  let perfect = 0; // review: first-try correct count
 
   function markSolved(n){
     solved[n]=true;
-    const arr = new Set(doneMap[lv.id]||[]); arr.add(n);
-    doneMap[lv.id]=[...arr]; saveDone(doneMap);
+    if(!cfg.review){
+      const arr = new Set(doneMap[cfg.levelId]||[]); arr.add(n);
+      doneMap[cfg.levelId]=[...arr]; saveDone(doneMap);
+    }
     recordLearningDay();
   }
   function dotsHTML(){
-    return `<div class="dots">${lv.cards.map((_,n)=>`<i class="${solved[n]?'done':(n===i?'here':'')}"></i>`).join('')}</div>`;
+    return `<div class="dots">${cards.map((_,n)=>`<i class="${solved[n]?'done':(n===i?'here':'')}"></i>`).join('')}</div>`;
   }
   function card(){
-    const c = lv.cards[i];
+    const c = cards[i];
+    let firstTry = true;
     stage.innerHTML = `
       <button class="back" id="back">← 关卡地图</button>
       ${dotsHTML()}
       <div class="card">
-        <p class="eyebrow">${lv.icon} ${lv.name} · 第 ${i+1}/${lv.cards.length} 词</p>
+        <p class="eyebrow">${cfg.icon} ${cfg.name} · 第 ${i+1}/${cards.length} 词</p>
         <h1 class="term">${c.term}</h1>
         <p class="plain">${c.plain}</p>
         <div class="analogy">${ART[c.art]||''}<p>${c.analogy}</p></div>
         <p class="q">${c.q}</p>
         <div class="opts" id="opts">${c.opts.map((o,n)=>`<button class="opt" data-n="${n}">${o.t}</button>`).join('')}</div>
         <div id="fb"></div>
-        <p class="helper" id="helper"${solved[i]?' hidden':''}>👆 选一个答案,答对就能继续</p>
+        <p class="helper" id="helper"${solved[i]&&!cfg.review?' hidden':''}>👆 选一个答案,答对就能继续</p>
         <div class="spacer"></div>
-        <button class="next" id="next"${solved[i]?'':' hidden'}>${i===lv.cards.length-1?'完成 🎉':'下一个 →'}</button>
+        <button class="next" id="next"${solved[i]&&!cfg.review?'':' hidden'}>${i===cards.length-1?'完成 🎉':'下一个 →'}</button>
       </div>`;
     stage.querySelector('#back').addEventListener('click', renderHome);
     const opts = stage.querySelector('#opts'), fb = stage.querySelector('#fb'), next = stage.querySelector('#next'), helper = stage.querySelector('#helper');
@@ -667,7 +694,7 @@ function renderDeck(lvlIdx){
       if(e.key>='1' && e.key<='9'){ const b=opts.children[+e.key-1]; if(b && !b.disabled){ e.preventDefault(); b.click(); } }
       else if(e.key==='Enter'){ if(next && !next.hidden){ e.preventDefault(); next.click(); } }
     });
-    if(solved[i]){ // already learned: reveal answer
+    if(solved[i] && !cfg.review){ // already learned (level mode): reveal answer
       [...opts.children].forEach((b,n)=>{ b.disabled=true; if(c.opts[n].ok) b.classList.add('correct'); });
       fb.className='feedback'; fb.innerHTML=`<b>懂了 ✓</b> ${c.praise}`;
     }
@@ -677,26 +704,43 @@ function renderDeck(lvlIdx){
       if(o.ok){
         btn.classList.add('correct'); [...opts.children].forEach(b=>b.disabled=true);
         fb.className='feedback'; fb.innerHTML=`<b>懂了 ✓</b> ${c.praise}`;
+        if(cfg.review && firstTry) perfect++;
         markSolved(i); helper.hidden=true; next.hidden=false; next.focus();
       }else{
+        firstTry=false;
         btn.classList.add('wrong'); btn.disabled=true;
         fb.className='feedback hint'; fb.innerHTML=`<b>再想想</b> ${o.why}`;
       }
     });
-    next.addEventListener('click', ()=>{ i++; i<lv.cards.length ? card() : finish(); });
+    next.addEventListener('click', ()=>{ i++; i<cards.length ? card() : finish(); });
   }
   function finish(){
-    const nextLv = LEVELS[lvlIdx+1];
+    if(cfg.review){
+      stage.innerHTML = `
+        <div class="card done-card">
+          <p class="big">💪</p>
+          <h2>复习完成!又巩固了 ${cards.length} 个词</h2>
+          <p>一次答对 ${perfect}/${cards.length} —— 记得越来越牢了。</p>
+          <ul class="recap">${cards.map(c=>`<li><span class="tick">✓</span><span><b>${c.term}</b> · ${c.plain}</span></li>`).join('')}</ul>
+          <button class="next" id="again">再来一组 🔁</button>
+          <button class="ghost" id="home">回到关卡地图</button>
+        </div>`;
+      stage.querySelector('#again').addEventListener('click', renderReview);
+      stage.querySelector('#home').addEventListener('click', renderHome);
+      setKeys(e=>{ if(e.key==='Enter'){ e.preventDefault(); stage.querySelector('#again').click(); } });
+      return;
+    }
+    const nextLv = LEVELS[cfg.lvlIdx+1];
     stage.innerHTML = `
       <div class="card done-card">
         <p class="big">🎉</p>
-        <h2>${lv.name}通关!你学会了 ${lv.cards.length} 个词</h2>
+        <h2>${cfg.name}通关!你学会了 ${cards.length} 个词</h2>
         <p>下次听到它们,不慌。</p>
-        <ul class="recap">${lv.cards.map(c=>`<li><span class="tick">✓</span><span><b>${c.term}</b> · ${c.plain}</span></li>`).join('')}</ul>
+        <ul class="recap">${cards.map(c=>`<li><span class="tick">✓</span><span><b>${c.term}</b> · ${c.plain}</span></li>`).join('')}</ul>
         <button class="next" id="go">${nextLv?`解锁下一关:${nextLv.icon} ${nextLv.name} →`:'回到关卡地图'}</button>
         <button class="ghost" id="home">回到关卡地图</button>
       </div>`;
-    stage.querySelector('#go').addEventListener('click', ()=> nextLv ? renderDeck(lvlIdx+1) : renderHome());
+    stage.querySelector('#go').addEventListener('click', ()=> nextLv ? renderDeck(cfg.lvlIdx+1) : renderHome());
     stage.querySelector('#home').addEventListener('click', renderHome);
     setKeys(e=>{ if(e.key==='Enter'){ e.preventDefault(); stage.querySelector('#go').click(); } });
   }
