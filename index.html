@@ -694,6 +694,7 @@ function renderHome(){
       ${state}`;
     btn.addEventListener('click', ()=> unlocked ? renderDeck(idx) : showToast(`先通关「${LEVELS[idx-1].name}」就解锁这一关 🔓`));
     path.appendChild(btn);
+    if(isCurrent && currentIdx>2){ requestAnimationFrame(()=> btn.scrollIntoView({behavior:'smooth', block:'center'})); }
   });
 }
 
