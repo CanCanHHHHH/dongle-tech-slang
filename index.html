@@ -419,6 +419,28 @@ const LEVELS = [
        opts:[{t:"对接接口,确保双方能正常通信",ok:true},{t:"一起吃饭",ok:false,why:"是技术对接,不是聚餐 —— 联调。"},{t:"调音量",ok:false,why:"跟声音无关 —— 是前后端对接口。"}]},
     ]
   },
+  {
+    id:"integrate", icon:"🔌", name:"集成关", tag:"Lv.3 说得清",
+    sub:"第三方/SDK · Webhook · 灰度发布 · A/B 测试",
+    cards:[
+      {term:"第三方 / SDK", plain:"请外面的「现成模块」来用。", art:"puzzle",
+       analogy:"地图、支付这种专业活,不用自己从零造,直接接入别人做好的一块(<b>第三方 / SDK</b>),省时省力。",
+       q:"「App 里的地图直接用了高德的」,这叫?", praise:"对!用现成的第三方/SDK,不重复造轮子。",
+       opts:[{t:"用第三方 / SDK",ok:true},{t:"自己从零开发的",ok:false,why:"是接入了别人做好的模块 —— 第三方/SDK。"},{t:"抄袭",ok:false,why:"这是正规的接入授权服务,不是抄袭。"}]},
+      {term:"Webhook", plain:"事件一发生,对方「主动来敲门」。", art:"bell",
+       analogy:"不用你一直去问「好了没」,事情一发生对方就<b>主动通知你</b>(回调)。像快递到了自动给你发短信。",
+       q:"「付款成功后系统自动收到通知去发货」靠?", praise:"对!Webhook = 事件发生时主动回调通知。",
+       opts:[{t:"Webhook(事件回调)",ok:true},{t:"一直刷新去问",ok:false,why:"那样又慢又费 —— Webhook 是对方主动来通知。"},{t:"人工盯着",ok:false,why:"是系统自动通知,不用人盯 —— Webhook。"}]},
+      {term:"灰度发布", plain:"新功能「先给一小撮人」试。", art:"graygradient",
+       analogy:"不一次全量推,先放给一小部分用户(比如 5%),没问题再慢慢扩到所有人。<b>灰度发布</b>让风险可控。",
+       q:"「新版先给 5% 用户试用」这叫?", praise:"对!灰度发布 = 小范围先试,再全量。",
+       opts:[{t:"灰度发布",ok:true},{t:"上线失败了",ok:false,why:"这是故意只放一部分 —— 灰度发布,不是失败。"},{t:"测试环境",ok:false,why:"这是真实用户在用,只是范围小 —— 灰度。"}]},
+      {term:"A/B 测试", plain:"两版同时上,「比数据」选优。", art:"abtest",
+       analogy:"一半用户看红按钮、一半看绿按钮,过阵子比哪版转化高,再决定用哪个。<b>A/B 测试</b>用数据说话。",
+       q:"「一半用户看红按钮、一半看绿的,比转化率」是?", praise:"对!A/B 测试 = 用数据决定用哪版。",
+       opts:[{t:"A/B 测试",ok:true},{t:"一个 Bug",ok:false,why:"是故意分两组做实验 —— A/B 测试。"},{t:"灰度发布",ok:false,why:"灰度是「先给一部分」;A/B 是「两版对比选优」。"}]},
+    ]
+  },
 ];
 
 const ART = {
@@ -461,6 +483,10 @@ const ART = {
   receipt:`<svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" style="color:var(--accent)"><path d="M42 28c-8 0-8 8-8 22s0 22-8 22" style="color:var(--ok)"/><path d="M58 28c8 0 8 8 8 22s0 22 8 22" style="color:var(--ok)"/><path d="M44 44h12M42 56h16"/></svg>`,
   doc:`<svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round" style="color:var(--accent)"><path d="M34 20h22l14 14v46H34z"/><path d="M56 20v14h14" style="color:var(--ok)"/><path d="M42 48h20M42 58h20M42 68h12"/></svg>`,
   plug:`<svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" style="color:var(--accent)"><path d="M24 50h14M62 50h14"/><rect x="38" y="42" width="10" height="16" rx="2"/><rect x="52" y="42" width="10" height="16" rx="2" style="color:var(--ok)"/><path d="M24 44v12M76 44v12" style="color:var(--ok)"/></svg>`,
+  puzzle:`<svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round" style="color:var(--accent)"><path d="M30 30h16a6 6 0 1 1 12 0h14v14a6 6 0 1 1 0 12v14H44a6 6 0 1 0-12 0H30V52a6 6 0 1 0 0-12z" style="color:var(--ok)"/></svg>`,
+  bell:`<svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent)"><path d="M32 66V48a18 18 0 0 1 36 0v18l6 8H26z"/><path d="M44 78a6 6 0 0 0 12 0" style="color:var(--ok)"/></svg>`,
+  graygradient:`<svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3" style="color:var(--accent)"><circle cx="50" cy="50" r="28"/><path d="M50 22a28 28 0 0 1 0 56z" fill="currentColor" stroke="none" style="color:var(--ok)"/></svg>`,
+  abtest:`<svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round" style="color:var(--accent)"><rect x="18" y="30" width="28" height="40" rx="5"/><rect x="54" y="30" width="28" height="40" rx="5" style="color:var(--ok)"/><text x="32" y="56" text-anchor="middle" font-size="18" fill="currentColor" stroke="none" font-weight="700">A</text><text x="68" y="56" text-anchor="middle" font-size="18" fill="var(--ok)" stroke="none" font-weight="700">B</text></svg>`,
 };
 
 // ---------- progress (per-viewer convenience) ----------
@@ -542,7 +568,7 @@ function openShare(d){
         <span class="logo">懂</span>
         <h3>我的技术黑话进度</h3>
         <div class="score">${d.learned}<span style="font-size:20px;color:var(--muted)"> / ${d.total}</span></div>
-        <div class="row"><span>🔥 连续 ${streakDays} 天</span><span>🟢 Lv.1 ${d.lv1d}/${d.lv1t}</span><span>🟡 Lv.2 ${d.lv2d}/${d.lv2t}</span></div>
+        <div class="row"><span>🔥 连续 ${streakDays} 天</span>${(d.tiers||[]).map(s=>`<span>${s.label} ${s.d}/${s.t}</span>`).join('')}</div>
       </div>
       <button class="next" id="copy">复制战绩文字</button>
       <button class="ghost" id="close">截图上方卡片分享给朋友 · 关闭</button>
@@ -560,7 +586,7 @@ function openShare(d){
   });
   const cp = wrap.querySelector('#copy');
   cp.addEventListener('click', ()=>{
-    const txt = `我在「懂了」学会了 ${d.learned}/${d.total} 个技术黑话 🎓\n🔥 连续 ${streakDays} 天 · 🟢 Lv.1 ${d.lv1d}/${d.lv1t} · 🟡 Lv.2 ${d.lv2d}/${d.lv2t}\n用生活场景听懂技术,答错不扣分~`;
+    const txt = `我在「懂了」学会了 ${d.learned}/${d.total} 个技术黑话 🎓\n🔥 连续 ${streakDays} 天 · ${(d.tiers||[]).map(s=>s.label+' '+s.d+'/'+s.t).join(' · ')}\n用生活场景听懂技术,答错不扣分~`;
     if(navigator.clipboard && navigator.clipboard.writeText){
       navigator.clipboard.writeText(txt).then(()=>{ cp.textContent='已复制 ✓'; }).catch(()=>{ cp.textContent='复制没成功,长按卡片截图吧'; });
     } else { cp.textContent='长按上方卡片截图分享吧'; }
@@ -572,9 +598,12 @@ function renderHome(){
   setKeys(null);
   const totalWords = LEVELS.reduce((s,l)=>s+l.cards.length,0);
   const learned = LEVELS.reduce((s,l)=>s+levelDoneCount(l.id),0);
-  const lv1 = LEVELS.filter(l=>l.tag.includes('Lv.1')), lv2 = LEVELS.filter(l=>l.tag.includes('Lv.2'));
-  const lv1t = lv1.reduce((s,l)=>s+l.cards.length,0), lv1d = lv1.reduce((s,l)=>s+levelDoneCount(l.id),0);
-  const lv2t = lv2.reduce((s,l)=>s+l.cards.length,0), lv2d = lv2.reduce((s,l)=>s+levelDoneCount(l.id),0);
+  const TIERS = [['🟢 Lv.1 认字','Lv.1'],['🟡 Lv.2 听得懂','Lv.2'],['🟠 Lv.3 说得清','Lv.3'],['🔴 Lv.4 聊得来','Lv.4']];
+  const tierStats = TIERS.map(([label,key])=>{
+    const ls = LEVELS.filter(l=>l.tag.includes(key));
+    if(!ls.length) return null;
+    return { label, d: ls.reduce((s,l)=>s+levelDoneCount(l.id),0), t: ls.reduce((s,l)=>s+l.cards.length,0) };
+  }).filter(Boolean);
   const C = 2*Math.PI*36, off = C*(1 - (totalWords? learned/totalWords : 0));
   const statsHTML = `
     <div class="stats">
@@ -587,7 +616,7 @@ function renderHome(){
       </div>
       <div class="stat-meta">
         <span class="pill">🔥 连续学习 ${streakDays} 天</span>
-        <div class="tiers"><span>🟢 Lv.1 认字 ${lv1d}/${lv1t}</span><span>🟡 Lv.2 听得懂 ${lv2d}/${lv2t}</span></div>
+        <div class="tiers">${tierStats.map(s=>`<span>${s.label} ${s.d}/${s.t}</span>`).join('')}</div>
         <div class="metabtns">
           <button class="share-btn" id="review">${(wrongList.filter(t=>TERM2CARD[t]).length)>0 ? `🔁 复习错词 (${wrongList.filter(t=>TERM2CARD[t]).length})` : '🔁 随机复习'}</button>
           <button class="share-btn" id="share">🏆 成绩卡</button>
@@ -597,13 +626,13 @@ function renderHome(){
   const welcomeHTML = `<div class="welcome">👋 新手就从下面的 <b>🍜 餐厅关</b> 开始 —— 3 分钟,学会你的头 5 个词。</div>`;
   stage.innerHTML = `
     <p class="lede">开会听不懂技术黑话?这里用生活场景把它们讲成人话,让你跟程序员、产品能对上话。一屏一个词,答错不扣分。</p>
-    ${learned===totalWords && totalWords>0 ? '<div class="allclear">🎉 全部通关!39 个技术黑话你都拿下了</div>' : ''}
+    ${learned===totalWords && totalWords>0 ? `<div class="allclear">🎉 全部通关!${totalWords} 个技术黑话你都拿下了</div>` : ''}
     ${learned>0 ? statsHTML : welcomeHTML}
     <div class="search"><span class="mag">🔍</span><input id="search" placeholder="随手查:输入一个词,如 接口 / Bug / 缓存" autocomplete="off" aria-label="查词"></div>
     <ul class="results" id="results"></ul>
     <ul class="path" id="path"></ul>`;
   const shareBtn = stage.querySelector('#share');
-  if(shareBtn) shareBtn.addEventListener('click', ()=> openShare({learned, total:totalWords, lv1d, lv1t, lv2d, lv2t}));
+  if(shareBtn) shareBtn.addEventListener('click', ()=> openShare({learned, total:totalWords, tiers:tierStats}));
   const reviewBtn = stage.querySelector('#review');
   if(reviewBtn) reviewBtn.addEventListener('click', renderReview);
   const inp = stage.querySelector('#search'), res = stage.querySelector('#results');
