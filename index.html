@@ -178,6 +178,10 @@
   .recap .tick{color:var(--ok); font-weight:700}
   .ghost{margin-top:10px; background:transparent; border:1px solid var(--line); color:var(--muted); border-radius:16px; padding:14px; width:100%; font:inherit; cursor:pointer}
   .foot{text-align:center; color:var(--muted); font-size:12px; padding:16px 0 4px}
+  .foot a{color:var(--accent); text-decoration:none; font-weight:700}
+  .report{display:inline-block; align-self:flex-start; margin-top:14px; color:var(--muted); font-size:12.5px; text-decoration:none}
+  .report:hover{color:var(--accent)}
+  .report:focus-visible{outline:3px solid var(--accent); outline-offset:2px}
   code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.92em; background:var(--surface-2); padding:1px 5px; border-radius:5px}
 
   /* search / dictionary */
@@ -204,7 +208,7 @@
     <button class="icon-btn theme-btn" id="theme" aria-label="切换深浅色">◐</button>
   </div>
   <div id="stage" aria-live="polite"></div>
-  <p class="foot">技术黑话翻译器 · 样片 · 答错不扣分,想学就学</p>
+  <p class="foot">技术黑话翻译器 · 样片 · 答错不扣分,想学就学 · <a href="https://github.com/CanCanHHHHH/dongle-tech-slang/issues/new?title=%E4%BD%93%E9%AA%8C%E5%8F%8D%E9%A6%88%20/%20%E5%BB%BA%E8%AE%AE" target="_blank" rel="noopener">💬 反馈</a></p>
 </div>
 
 <script>
@@ -531,6 +535,17 @@ function addWrong(term){ if(!wrongList.includes(term)){ wrongList.push(term); sa
 function removeWrong(term){ const k=wrongList.indexOf(term); if(k>=0){ wrongList.splice(k,1); saveWrong(wrongList); } }
 function shuffle(a){ a=a.slice(); for(let k=a.length-1;k>0;k--){ const j=Math.floor(Math.random()*(k+1)); [a[k],a[j]]=[a[j],a[k]]; } return a; }
 
+// 反馈渠道:默认走 GitHub Issues(公开仓库,作者能在 Issues 看到全部反馈)。
+// 日后若改用免登录表单(腾讯问卷 / Tally / Google 表单),把 FEEDBACK_FORM 换成表单链接即可,全站入口自动切换。
+const FEEDBACK_FORM = '';
+const REPO_URL = 'https://github.com/CanCanHHHHH/dongle-tech-slang';
+function feedbackURL(term){
+  if(FEEDBACK_FORM) return FEEDBACK_FORM;
+  const title = term ? `类比反馈:${term}` : '体验反馈 / 建议';
+  const body  = term ? `【词条】${term}\n\n【我觉得可以更好的地方】\n` : `【我的体验 / 建议】\n\n【哪里最卡壳,或最有帮助】\n`;
+  return `${REPO_URL}/issues/new?title=${encodeURIComponent(title)}&body=${encodeURIComponent(body)}`;
+}
+
 function ymd(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
 // streak counts days the user actually LEARNED (completed >=1 card), not mere visits
 function readStreak(){ try{ return (JSON.parse(localStorage.getItem('dl-streak'))||{}).streak||0; }catch(e){ return 0; } }
@@ -755,6 +770,7 @@ function playSession(cfg){
         <p class="helper" id="helper"${solved[i]&&!cfg.review?' hidden':''}>👆 选一个答案,答对就能继续</p>
         <div class="spacer"></div>
         <button class="next" id="next"${solved[i]&&!cfg.review?'':' hidden'}>${i===cards.length-1?'完成 🎉':'下一个 →'}</button>
+        <a class="report" href="${feedbackURL(c.term)}" target="_blank" rel="noopener">🚩 这条讲错了?告诉作者</a>
       </div>`;
     stage.querySelector('#back').addEventListener('click', renderHome);
     const opts = stage.querySelector('#opts'), fb = stage.querySelector('#fb'), next = stage.querySelector('#next'), helper = stage.querySelector('#helper');
