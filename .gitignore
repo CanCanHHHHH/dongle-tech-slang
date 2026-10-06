@@ -1,3 +1,11 @@
+# dependencies / build
+node_modules/
+dist/
+*.tsbuildinfo
+# tsc -b 对 vite.config.ts 的产物
+vite.config.js
+vite.config.d.ts
+
 # macOS
 .DS_Store
 ._*
@@ -7,7 +15,7 @@
 .idea/
 *.swp
 
-# Temp / build
+# Temp / logs
 tmp/
 output/
 *.log

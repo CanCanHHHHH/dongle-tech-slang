@@ -19,7 +19,21 @@
 - **闯关 + 词典双模式** —— 顺序解锁闯关学;也能"随手查"任意词,直接看解释。
 - **智能复习 + 错词本** —— 答错的词自动进错词本、复习时优先重考,首答答对即"毕业";没有错词就随机抽学过的词(都不影响闯关进度)。
 - **成就感** —— 进度环、连续学习天数(绑定真实学习)、可分享成绩卡。
-- **零依赖** —— 单个 `index.html`,无框架、无构建、无后端,进度存在浏览器本地。
+- **现代前端工程** —— React + TypeScript + Vite,组件化 + 类型安全;构建产物部署到 GitHub Pages。纯前端无后端,进度存在浏览器本地。
+
+## 🛠 技术栈
+
+React 18 · TypeScript · Vite · 纯 CSS 设计系统(CSS 变量 + 深浅色)· GitHub Pages(gh-pages 分支)
+
+```
+src/
+├── main.tsx            # 入口
+├── App.tsx             # 根状态机(主题 / 弹层 / toast)
+├── components/         # Home / Deck / Sheets / Icon
+├── lib/                # storage(本地进度)· progress(解锁/统计)· feedback
+├── data/               # levels.ts(47 词)· icons.ts(内联 SVG)
+└── styles.css          # 设计系统 tokens + 组件样式
+```
 
 ## 📚 内容(11 关 47 词)
 
@@ -37,15 +51,16 @@
 | 🟠 Lv.3 说得清 | 🔌 集成关 | 第三方/SDK · Webhook · 灰度发布 · A/B 测试 |
 | 🟠 Lv.3 说得清 | 🔍 洞察关 | 埋点 · 日志 · 索引 · 并发 |
 
-## 🚀 使用
-
-直接用浏览器打开 `index.html` 即可,无需安装任何东西。
+## 🚀 本地运行
 
 ```bash
-# 或本地起个静态服务(可选)
-python3 -m http.server 8000
-# 然后打开 http://localhost:8000
+npm install
+npm run dev        # 开发(热更新)
+npm run build      # 生产构建到 dist/
+npm run preview    # 预览构建产物
 ```
+
+在线体验(自动部署):**https://cancanhhhhh.github.io/dongle-tech-slang/**
 
 **快捷键**:数字键 `1/2/3` 选答案,回车 `Enter` 进入下一张。
 
@@ -54,11 +69,11 @@ python3 -m http.server 8000
 - [x] MVP:9 关 39 词、闯关 + 词典、进度成就
 - [x] 随机复习模式
 - [x] 错词本(答错优先复习,掌握即毕业)
-- [x] Lv.3「说得清」起步(集成关)
-- [ ] 补齐 Lv.3 / Lv.4「聊得来」、更多场景
+- [x] Lv.3「说得清」(集成关 + 洞察关)
+- [x] 迁移到 React + TypeScript + Vite,构建部署到 Pages
+- [ ] 补齐 Lv.4「聊得来」(架构取舍)、更多场景
 - [ ] 账号 + 云端进度(跨设备)
-- [ ] 间隔重复排期(SM-2)
-- [ ] Lv.3 说得清 / Lv.4 聊得来(架构取舍)
+- [ ] 间隔重复排期(SM-2)、单元测试(Vitest)、PWA 离线
 
 ## 📖 文档
 

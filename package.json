@@ -1,0 +1,23 @@
+{
+  "name": "dongle-tech-slang",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "懂了 · 技术黑话翻译器 —— 给非技术小白的技术黑话学习器,用生活场景讲成人话,ADHD 友好。",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.11"
+  }
+}
